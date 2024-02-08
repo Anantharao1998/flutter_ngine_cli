@@ -55,10 +55,10 @@ class CreateApp extends Command {
     }
 
     /// Creates flutter app.
-    _createApp(appName, orgName);
+    await _createApp(appName, orgName);
   }
 
-  void _createApp(String appName, String orgName) async {
+  Future<void> _createApp(String appName, String orgName) async {
     final Progress createAppProgress = logger.progress('Creating app $appName');
 
     await Process.run(flutterPath, ['create', appName, '--empty', '--org', orgName, '--verbose']);
