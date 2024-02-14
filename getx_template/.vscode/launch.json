@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "UAT-Flavor",
+        "program": "lib/main_uat.dart",
+        "request": "launch",
+        "flutterMode": "debug",
+        "type": "dart",
+        "args": [
+            "--flavor", 
+            "uat"
+        ],
+      },
+      {
+        "name": "DEV-Flavor",
+        "program": "lib/main_dev.dart",
+        "request": "launch",
+        "flutterMode": "debug",
+        "type": "dart",
+        "args": [
+            "--flavor", 
+            "dev"
+        ],
+      },
+      {
+        "name": "PROD-Flavor",
+        "program": "lib/main_prod.dart",
+        "request": "launch",
+        "flutterMode": "release",
+        "type": "dart",
+        "args": [
+            "--flavor", 
+            "prod"
+        ],
+      }
+    ]
+  }

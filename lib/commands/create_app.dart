@@ -64,7 +64,7 @@ class CreateApp extends Command {
     }
 
     if (templateName == null || templateName.isEmpty) {
-      print('Please provide a template to be used for your app.');
+      print('Please provide a template to be used for your app. Use "-t {template-name}"');
       return;
     } else {
       List<String> validTemplateNames = ['getx', 'provider'];
