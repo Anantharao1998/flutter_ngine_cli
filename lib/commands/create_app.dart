@@ -17,7 +17,15 @@ class CreateApp extends Command {
       'name',
       abbr: 'n',
       help: 'The name of the app to create.',
-      valueHelp: 'sample_flutter_app',
+      valueHelp: 'sample',
+    )
+
+    /// Template to be used  for the app
+    ..addOption(
+      'template',
+      abbr: 't',
+      help: 'The template to be used for the app.',
+      valueHelp: 'getx, provider',
     )
 
     /// Gets organization name from the argument
@@ -41,6 +49,7 @@ class CreateApp extends Command {
     /// Gets all arguments passed from the command.
     final String? appName = argResults?['name'] as String?;
     final String? orgName = argResults?['org'] as String?;
+    final String? templateName = argResults?['template'] as String?;
 
     /// Returns error message if app name is not provided
     if (appName == null || appName.isEmpty) {
@@ -49,13 +58,38 @@ class CreateApp extends Command {
     }
 
     /// Returns error message if organization name is empty or not valid.
-    if (orgName == null || orgName.isEmpty || orgName.split('.').length != 2) {
-      print('Please provide an organization name for your app (ex. com.example).');
+    if (orgName == null || orgName.split('.').length != 2) {
+      print('Please provide a proper organization name for your app (ex. com.example).');
       return;
+    }
+
+    if (templateName == null || templateName.isEmpty) {
+      print('Please provide a template to be used for your app.');
+      return;
+    } else {
+      List<String> validTemplateNames = ['getx', 'provider'];
+
+      if (validTemplateNames.contains(templateName.toLowerCase())) {
+        // Proceed with the template logic
+      } else {
+        print('Given template is not valid, please try again. Example: (getx, provider).');
+        return;
+      }
     }
 
     /// Creates flutter app.
     await _createApp(appName, orgName);
+
+    /// Gets template directory
+    final String? templatePath = await _getTemplateDirectory();
+
+    /// Checks of the template path is null. Returns error if true.
+    if (templatePath == null) {
+      logger.stdout('Template path is null');
+      return;
+    }
+
+    await copyTemplate(templatePath, appName);
   }
 
   Future<void> _createApp(String appName, String orgName) async {
@@ -64,5 +98,14 @@ class CreateApp extends Command {
     await Process.run(flutterPath, ['create', appName, '--empty', '--org', orgName, '--verbose']);
 
     createAppProgress.finish(showTiming: true);
+  }
+
+  Future<String?> _getTemplateDirectory() async {
+    final Progress copyTemplateProgress = logger.progress('Getting template directory...');
+    String? templatePath = await getTemplateDir(Template.getx);
+
+    copyTemplateProgress.finish(showTiming: true);
+
+    return templatePath;
   }
 }
