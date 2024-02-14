@@ -92,6 +92,7 @@ class CreateApp extends Command {
     /// Copy the original template and changes the app name.
     await copyTemplate(templatePath, appName);
     final rootFileProgress = logger.progress('Creating root files...');
+    /// Creates all the root files such as [pubspec.yaml].
     await createRootFiles(templatePath, appName);
     rootFileProgress.finish(showTiming: true);
 
@@ -102,10 +103,12 @@ class CreateApp extends Command {
 
     createKeyProgress.finish(showTiming: true);
 
+    /// Runs [Flutter pub get] in the newly created project directory.
     final pubProgress = logger.progress('Running flutter pub get...');
     await Process.run(flutterPath, ['pub', 'get']);
     pubProgress.finish(showTiming: true);
 
+    /// Format all the files using dart formatter
     final progress = logger.progress('Tidying the workspace...');
     await Process.run('dart', ['format', '.']);
     progress.finish(showTiming: true);

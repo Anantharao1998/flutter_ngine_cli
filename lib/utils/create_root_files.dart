@@ -34,14 +34,16 @@ Future<void> createRootFiles(String templatePath, String appName) async {
   }
 }
 
-String getPubspecText(String appName, {String? templatePath}) => File('$templatePath/pubspec.yaml').readAsStringSync()
-  ..replaceAll(
-    'juno_provider_base_project',
-    appName.toLowerCase(),
-  ).replaceAll(
-    'juno_getx_base_project',
-    appName.toLowerCase(),
-  );
+String getPubspecText(String appName, {String? templatePath}) => File('$templatePath/pubspec.yaml')
+    .readAsStringSync()
+    .replaceAll(
+      'juno_provider_base_project',
+      appName.toLowerCase(),
+    )
+    .replaceAll(
+      'juno_getx_base_project',
+      appName.toLowerCase(),
+    );
 
 String getAnalysisOptionsText({String? templatePath}) => File('$templatePath/analysis_options.yaml').readAsStringSync();
 

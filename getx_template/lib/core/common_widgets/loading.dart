@@ -8,9 +8,9 @@ class Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: const Scaffold(
+    return const PopScope(
+      canPop: false,
+      child: Scaffold(
         backgroundColor: AppColors.white,
         body: Center(
           child: SizedBox(

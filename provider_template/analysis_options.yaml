@@ -17,7 +17,6 @@ linter:
     - prefer_final_fields
     - unnecessary_new
     - prefer_const_constructors
-    - directives_ordering
     - prefer_collection_literals
     - avoid_function_literals_in_foreach_calls
     - type_annotate_public_apis
@@ -76,7 +75,6 @@ analyzer:
     prefer_final_fields : error
     unnecessary_new : error
     prefer_const_constructors : error
-    directives_ordering : error
     prefer_collection_literals : error
     avoid_function_literals_in_foreach_calls : error
     type_annotate_public_apis : error
