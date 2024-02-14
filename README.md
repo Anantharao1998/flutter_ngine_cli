@@ -2,7 +2,7 @@
 
 ### A. Activate the package
 
-Open a terminal and run "dart pub global activate --source git git@github.com:Anantharao1998/flutter_ngine_cli.git".
+Open a terminal and run "dart pub global activate --source git git@192.168.88.76:juno-base-project/cli.git".
 
 ### B. Create your first app using 'ngine create'
 
