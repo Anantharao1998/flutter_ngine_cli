@@ -81,7 +81,7 @@ class CreateApp extends Command {
     await _createApp(appName, orgName);
 
     /// Gets template directory
-    final String? templatePath = await _getTemplateDirectory();
+    final String? templatePath = await _getTemplateDirectory(templateName);
 
     /// Checks of the template path is null. Returns error if true.
     if (templatePath == null) {
@@ -89,7 +89,28 @@ class CreateApp extends Command {
       return;
     }
 
+    /// Copy the original template and changes the app name.
     await copyTemplate(templatePath, appName);
+    final rootFileProgress = logger.progress('Creating root files...');
+    await createRootFiles(templatePath, appName);
+    rootFileProgress.finish(showTiming: true);
+
+    final Progress createKeyProgress = logger.progress('Creating keystore for $appName');
+
+    /// Creates key.properties file.
+    await createKeyFile();
+
+    createKeyProgress.finish(showTiming: true);
+
+    final pubProgress = logger.progress('Running flutter pub get...');
+    await Process.run(flutterPath, ['pub', 'get']);
+    pubProgress.finish(showTiming: true);
+
+    final progress = logger.progress('Tidying the workspace...');
+    await Process.run('dart', ['format', '.']);
+    progress.finish(showTiming: true);
+
+    logger.stdout('Your app is ready! 🚀');
   }
 
   Future<void> _createApp(String appName, String orgName) async {
@@ -100,9 +121,9 @@ class CreateApp extends Command {
     createAppProgress.finish(showTiming: true);
   }
 
-  Future<String?> _getTemplateDirectory() async {
+  Future<String?> _getTemplateDirectory(String? templateName) async {
     final Progress copyTemplateProgress = logger.progress('Getting template directory...');
-    String? templatePath = await getTemplateDir(Template.getx);
+    String? templatePath = await getTemplateDir(templateName);
 
     copyTemplateProgress.finish(showTiming: true);
 

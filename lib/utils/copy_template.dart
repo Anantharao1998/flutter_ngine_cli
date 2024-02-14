@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:cli_util/cli_logging.dart';
+import 'package:flutter_ngine_cli/utils/utils.dart';
 import 'package:io/io.dart';
 
 /*
@@ -13,7 +15,7 @@ It checks if the directory exists.
 If the directory exists, it calls getTemplateDirectory function passing the absolute URI and the template object.
 It returns the path of the template directory if it exists, otherwise, it returns null.
 */
-Future<String?> getTemplateDir(Template? template) async {
+Future<String?> getTemplateDir(String? templateName) async {
   final packageUri = Uri.parse('package:flutter_ngine_cli/');
 
   final future = Isolate.resolvePackageUri(packageUri);
@@ -22,8 +24,10 @@ Future<String?> getTemplateDir(Template? template) async {
 
   final directory = Directory.fromUri(absoluteUri!);
 
+  final Template selectedTemplate = getTemplate(templateName);
+
   if (directory.existsSync()) {
-    Directory templateDirectory = getTemplateDirectory(absoluteUri, template: template);
+    Directory templateDirectory = getTemplateDirectory(absoluteUri, template: selectedTemplate);
 
     return templateDirectory.path;
   }
@@ -52,14 +56,13 @@ Directory getTemplateDirectory(Uri absoluteUri, {Template? template}) {
   }
 }
 
-enum Template { getx, provider }
-
 Future<void> copyTemplate(String templatePath, String appName) async {
+  final setupTemplateProgress = logger.progress('Initial template setup...');
   Directory.current = Directory(appName);
   await copyPath('$templatePath/lib', 'lib');
 
   try {
-    // Replace all instances of flutterfast with the app name
+    // Replace all instances with the app name
     final directory = Directory('lib');
 
     await for (var entity in directory.list(recursive: true, followLinks: false)) {
@@ -69,7 +72,11 @@ Future<void> copyTemplate(String templatePath, String appName) async {
         await entity.writeAsString(modifiedContent);
       }
     }
+
+    setupTemplateProgress.finish(showTiming: true);
   } catch (e) {
     stderr.writeln(e);
   }
 }
+
+final Logger logger = Logger.standard();
